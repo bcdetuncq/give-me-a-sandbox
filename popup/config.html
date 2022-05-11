@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head title="Give me a sandbox - Configuration">
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                width: 250px;
+                padding: 16px;
+            }
+
+            .label {
+                font-size: 16px;
+            }
+
+            .input {
+                display: flex;
+                color: #0f3256;
+                border: solid 1px #abb8c4;
+                border-radius: 6px;
+                height: 36px;
+                outline: none;
+                padding: 0 16px;
+                margin: 6px 0 16px 0;
+            }
+
+            .button {
+                cursor: pointer;
+                width: 100%;
+                padding: 0 8px;
+                background-color: #02a7cc;
+                color: #fff;
+                border: 0;
+                border-radius: 6px;
+                height: 36px;
+            }
+
+        </style>
+        <script type="application/javascript" src="config.js"></script>
+    </head>
+    <body>
+        <label for="github-token-input" class="label">Set your token</label>
+        <input id="github-token-input" placeholder="GitHub token" class="input">
+        <button id="github-token-button" class="button">Save</button>
+    </body>
+</html>
