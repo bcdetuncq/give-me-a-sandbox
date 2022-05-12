@@ -1,0 +1,22 @@
+{
+  "name": "Give me a sandbox",
+  "description": "Easier way to track available sandboxes!",
+  "version": "1.0",
+  "manifest_version": 2,
+  "icons": {
+    "72": "assets/icon-72x72.png"
+  },
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/asiainspection/qima-platform/*"],
+      "js": ["sandboxes-helper.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "optional_permissions": ["https://github.com/asiainspection/qima-platform/pull/*", "https://api.github.com/repos/asiainspection/qima-platform/*", "webNavigation"],
+  "permissions": ["https://github.com/asiainspection/qima-platform/pull/*", "https://localhost/*", "https://api.github.com/repos/asiainspection/qima-platform/*", "webNavigation", "storage"]
+}

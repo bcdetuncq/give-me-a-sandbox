@@ -7,12 +7,12 @@
     "72": "assets/icon-72x72.png"
   },
   "browser_action": {
-    "default_popup": "popup/config.html"
+    "default_popup": "index.html"
   },
   "content_scripts": [
     {
       "matches": ["https://github.com/asiainspection/qima-platform/*"],
-      "js": ["sandboxes.js"],
+      "js": ["sandboxes-helper.js"],
       "run_at": "document_end",
       "all_frames": true
     }
