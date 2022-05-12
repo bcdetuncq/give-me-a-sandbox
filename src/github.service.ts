@@ -1,5 +1,8 @@
 import {IGitHubLabel, IGitHubPullRequest} from "./github.models";
 
+// @ts-ignore
+const browserObject = chrome ?? browser;
+
 export class GithubService {
     private readonly _baseGitHubUrl: string = `https://api.github.com/repos/asiainspection/qima-platform`;
     private _requestHeaders: HeadersInit = {};
@@ -9,7 +12,7 @@ export class GithubService {
     }
 
     public _loadGitHubToken(): void {
-        chrome.storage.sync.get('github_token', (items) => {
+        browserObject.storage.sync.get('github_token', (items) => {
             this._requestHeaders = { Authorization: `Bearer ${items.github_token}` };
         });
     }

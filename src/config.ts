@@ -1,3 +1,6 @@
+// @ts-ignore
+const browserObject = chrome ?? browser;
+
 window.addEventListener ("load", initConfigModal, false);
 
 function initConfigModal(): void {
@@ -14,7 +17,7 @@ function initTokenInputValue(): void {
 function addListener() {
     document.getElementById('github-token-button')?.addEventListener('click', () => {
         const gitHubTokenValue = (<HTMLInputElement>document.getElementById('github-token-input'))?.value;
-        void chrome.storage.sync.set({ github_token: gitHubTokenValue });
+        void browserObject.storage.sync.set({ github_token: gitHubTokenValue });
+        window.close();
     });
 }
-
