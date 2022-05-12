@@ -8,13 +8,15 @@ export class GithubService {
         this._loadGitHubToken();
     }
 
-    private _loadGitHubToken() {
+    public _loadGitHubToken(): void {
         chrome.storage.sync.get('github_token', (items) => {
             this._requestHeaders = { Authorization: `Bearer ${items.github_token}` };
         });
     }
 
     public getLabels(): Promise<IGitHubLabel[]> {
+        this._loadGitHubToken();
+
         return fetch(`${this._baseGitHubUrl}/labels`, { headers: this._requestHeaders }).then(result => result.json());
     }
 

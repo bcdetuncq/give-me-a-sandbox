@@ -3,6 +3,7 @@ export const UNAVAILABLE_COLOR: string = 'style="--label-r:188;--label-g:33;--la
 export const REFRESH_BUTTON_ID: string = 'qima-sandboxes-refresh-button';
 export const MAIN_WRAPPER_ID: string = 'qima-github';
 export const AVAILABLE_SANDBOX_CLASSNAME: string = 'qima-deploy-available';
+export const ERROR_MESSAGE_HTML: string = '<span style="color: red">Please make sure your GitHub token is configured properly in the Extension option and valid.</span>';
 export const SANDBOXES_WRAPPER_ID: string = 'qima-sandboxes';
 export const SANDBOXES_WRAPPER_HTML: string = `
     <div class="discussion-sidebar-heading text-bold">

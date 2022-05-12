@@ -2,7 +2,7 @@ import { GithubService } from './github.service';
 import { IGitHubLabel, IGitHubPullRequest } from './github.models';
 import {
     AVAILABLE_COLOR,
-    AVAILABLE_SANDBOX_CLASSNAME,
+    AVAILABLE_SANDBOX_CLASSNAME, ERROR_MESSAGE_HTML,
     MAIN_WRAPPER_ID, REFRESH_BUTTON_ID,
     SANDBOXES_WRAPPER_HTML, SANDBOXES_WRAPPER_ID, UNAVAILABLE_COLOR
 } from './background-helper.models';
@@ -13,7 +13,6 @@ class BackgroundHelper {
 
     public constructor() {
         this._initMutationObserver();
-        void this._loadHelper();
     }
 
     private _injectSandboxesWrapper(): void {
@@ -33,30 +32,38 @@ class BackgroundHelper {
      * Once the HTML is injected, it will trigger the listener event
      */
     private async _injectSandboxesStatus(): Promise<void> {
-        const deployToPrefix: string = 'deploy-to-';
-        const labels: IGitHubLabel[] = await this._gitHubService.getLabels();
-        const sandboxesLabels: IGitHubLabel[] = labels.filter((label: IGitHubLabel): boolean => label.name.indexOf(deployToPrefix) !== -1);
-        const pullRequests: IGitHubPullRequest[] = await this._gitHubService.getPullRequests();
-        const pullRequestsWithSandboxes: IGitHubPullRequest[] = pullRequests.filter((pr: any): boolean => pr.labels.some((label: any): boolean => label.name.indexOf(deployToPrefix) !== -1));
-        const sandboxesLabelsHtml: string = sandboxesLabels.map((label: any): string => {
-            let pullRequestUsingLabel = pullRequestsWithSandboxes.find((pr: any): boolean => pr.labels.some((prLabel: any): boolean => prLabel.name.indexOf(label.name) !== -1));
+        try {
+            const deployToPrefix: string = 'deploy-to-';
+            const labels: IGitHubLabel[] = await this._gitHubService.getLabels();
 
-            return `<a id="${label.name}" class="IssueLabel hx_IssueLabel width-fit mb-1 mr-1 ${!pullRequestUsingLabel ? AVAILABLE_SANDBOX_CLASSNAME : ''}" ${pullRequestUsingLabel ? UNAVAILABLE_COLOR : AVAILABLE_COLOR}>${label.name.split(deployToPrefix)[1]}</a>`;
-        }).join('');
+            if (labels) {
+                const sandboxesLabels: IGitHubLabel[] = labels?.filter((label: IGitHubLabel): boolean => label.name.indexOf(deployToPrefix) !== -1);
+                const pullRequests: IGitHubPullRequest[] = await this._gitHubService.getPullRequests();
+                const pullRequestsWithSandboxes: IGitHubPullRequest[] = pullRequests?.filter((pr: any): boolean => pr.labels.some((label: any): boolean => label.name.indexOf(deployToPrefix) !== -1));
+                const sandboxesLabelsHtml: string = sandboxesLabels.map((label: any): string => {
+                    let pullRequestUsingLabel = pullRequestsWithSandboxes.find((pr: any): boolean => pr.labels.some((prLabel: any): boolean => prLabel.name.indexOf(label.name) !== -1));
 
-        document.getElementById(SANDBOXES_WRAPPER_ID)!.innerHTML = sandboxesLabelsHtml;
+                    return `<a id="${label.name}" class="IssueLabel hx_IssueLabel width-fit mb-1 mr-1 ${!pullRequestUsingLabel ? AVAILABLE_SANDBOX_CLASSNAME : ''}" ${pullRequestUsingLabel ? UNAVAILABLE_COLOR : AVAILABLE_COLOR}>${label.name.split(deployToPrefix)[1]}</a>`;
+                }).join('');
 
-        this._initListeners();
+                document.getElementById(SANDBOXES_WRAPPER_ID)!.innerHTML = sandboxesLabelsHtml;
+
+                this._initListeners();
+            } else {
+                this._injectErrorMessage();
+            }
+        } catch (error: unknown) {
+            this._injectErrorMessage();
+        }
+    }
+
+    private _injectErrorMessage(): void {
+        document.getElementById(SANDBOXES_WRAPPER_ID)!.innerHTML = ERROR_MESSAGE_HTML;
     }
 
     private _loadHelper(): void {
-        try {
-            this._injectSandboxesWrapper();
-
-            void this._injectSandboxesStatus();
-        } catch (error: unknown) {
-            console.error(error);
-        }
+        this._injectSandboxesWrapper();
+        void this._injectSandboxesStatus();
     }
 
     /**
@@ -83,7 +90,9 @@ class BackgroundHelper {
 
                     // Could not find a better way to know when GitHub has finished updating the views :(
                     // If it is triggered too quickly, we won't be able to inject the HTML into the page.
-                    setTimeout((): void => this._loadHelper(), 2000);
+                    setTimeout((): void => {
+                        this._loadHelper();
+                    }, 2000);
                 }
             } else {
                 this._currentPullRequestId = '';

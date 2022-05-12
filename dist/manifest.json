@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["https://github.com/asiainspection/qima-platform/*"],
-      "js": ["sandboxes-helper.js"],
+      "js": ["background-helper.js"],
       "run_at": "document_end",
       "all_frames": true
     }
